@@ -18,6 +18,7 @@ import {
   add,
   isSameDay,
 } from "date-fns";
+import HeadlessSlideOver from "./addEvent.js";
 
 const days = [
   { date: "2021-12-27" },
@@ -85,8 +86,8 @@ export default function Monthly() {
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
+  let [open, setOpen] = useState(false);
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
-
   let newDays = eachDayOfInterval({
     start: startOfWeek(firstDayCurrentMonth),
     end: endOfWeek(endOfMonth(firstDayCurrentMonth)),
@@ -130,7 +131,15 @@ export default function Monthly() {
               <span className="sr-only">Next month</span>
               <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
             </button>
+            <button
+              type="button"
+              className="ml-6 rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              onClick={() => setOpen(true)}
+            >
+              Add event
+            </button>
           </div>
+          <HeadlessSlideOver open={open} setOpen={setOpen} />
           <div className="mt-10 grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
             <div>S</div>
             <div>M</div>
