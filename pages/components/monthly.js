@@ -131,15 +131,7 @@ export default function Monthly() {
               <span className="sr-only">Next month</span>
               <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
             </button>
-            <button
-              type="button"
-              className="ml-6 rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              onClick={() => setOpen(true)}
-            >
-              Add event
-            </button>
           </div>
-          <HeadlessSlideOver open={open} setOpen={setOpen} />
           <div className="mt-10 grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
             <div>S</div>
             <div>M</div>
@@ -198,19 +190,33 @@ export default function Monthly() {
           </div>
         </div>
         <section className="mt-12 md:mt-0 md:pl-14">
-          <h2 className="font-semibold text-gray-900">
-            Schedule for{" "}
-            <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
-              {format(selectedDay, "MMM dd, yyy")}
-            </time>
-          </h2>
+          <div className="flex mx-4">
+            <h2 className="font-semibold text-gray-900">
+              Schedule for{" "}
+              <time dateTime={format(selectedDay, "yyyy-MM-dd")}>
+                {format(selectedDay, "MMM dd, yyy")}
+              </time>
+            </h2>
+            <button
+              type="button"
+              className="ml-24 rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              onClick={() => setOpen(true)}
+            >
+              Add event
+            </button>
+            <HeadlessSlideOver
+              open={open}
+              setOpen={setOpen}
+              dateTime={format(selectedDay, "MMM dd, yyy")}
+            />
+          </div>
           <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
             {selectedDayMeetings.length > 0 ? (
               selectedDayMeetings.map((meeting) => (
                 <Meeting meeting={meeting} key={meeting.id} />
               ))
             ) : (
-              <p> No meetings for today.</p>
+              <p> No events for today.</p>
             )}
           </ol>
         </section>
