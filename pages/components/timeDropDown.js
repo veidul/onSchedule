@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDoubleDownIcon } from "@heroicons/react/solid";
 
@@ -33,8 +33,15 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function timeDropDown({ start }) {
+export default function timeDropDown({ start, setStartTime, setEndTime }) {
   const [selected, setSelected] = useState(times[12]);
+  useEffect(() => {
+    if (start) {
+      setStartTime(selected);
+    } else {
+      setEndTime(selected);
+    }
+  }, [selected]);
 
   return (
     <Listbox value={selected} onChange={setSelected}>

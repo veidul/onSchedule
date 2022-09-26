@@ -1,10 +1,10 @@
 import React from "react";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
 import TimeDropDown from "./timeDropDown";
 
-function TextBox() {
+function TextBox({ setEventDetails }) {
   return (
     <div>
       <label
@@ -15,6 +15,9 @@ function TextBox() {
       </label>
       <div className="mt-1">
         <textarea
+          onChange={(e) => {
+            setEventDetails(e.target.value);
+          }}
           rows={4}
           name="comment"
           id="comment"
@@ -27,6 +30,23 @@ function TextBox() {
 }
 
 export default function HeadlessSlideOver({ open, setOpen, dateTime }) {
+  //plan is to get all this data then send to backend to be stored in db
+  //we will also need the user id to add to the object to save in db
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [eventDetails, setEventDetails] = useState("");
+  function onEventSubmit() {
+    const event = {
+      // get user id here from token?
+      dateTime: dateTime,
+      start: startTime,
+      end: endTime,
+      details: eventDetails,
+    };
+    setOpen(false);
+    // add toast here
+    console.log(event);
+  }
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
@@ -71,13 +91,22 @@ export default function HeadlessSlideOver({ open, setOpen, dateTime }) {
                     </div>
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
                       {/* Replace with your content */}
-                      <TimeDropDown start={true} />
-                      <TimeDropDown start={false} />
-                      <TextBox />
+                      <TimeDropDown
+                        start={true}
+                        setStartTime={setStartTime}
+                        setEndTime={setEndTime}
+                      />
+                      <TimeDropDown
+                        start={false}
+                        setStartTime={setStartTime}
+                        setEndTime={setEndTime}
+                      />
+                      <TextBox setEventDetails={setEventDetails} />
                       {/* /End replace */}
                     </div>
                     <button
                       type="button"
+                      onClick={onEventSubmit}
                       className="ml-6 rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       Submit
