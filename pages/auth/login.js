@@ -91,7 +91,7 @@ export default function Login() {
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <a
-                  href="/components/register"
+                  href="/auth/register"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Register

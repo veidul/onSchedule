@@ -121,7 +121,7 @@ export default function Register() {
             <div className="flex items-center justify-between">
               <div className="text-sm">
                 <a
-                  href="/components/signin"
+                  href="/auth/signin"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Sign in

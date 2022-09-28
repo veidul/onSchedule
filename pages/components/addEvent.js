@@ -2,6 +2,7 @@ import React from "react";
 import { Fragment, useState, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XIcon } from "@heroicons/react/outline";
+import { getSession } from "next-auth/react";
 import TimeDropDown from "./timeDropDown";
 
 function TextBox({ setEventDetails }) {
@@ -35,18 +36,28 @@ export default function HeadlessSlideOver({ open, setOpen, dateTime }) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [eventDetails, setEventDetails] = useState("");
-  function onEventSubmit() {
+  async function onEventSubmit() {
+    const session = await getSession();
     const event = {
-      // get user id here from token?
+      email: session.user.email,
       dateTime: dateTime,
       start: startTime,
       end: endTime,
       details: eventDetails,
     };
-    setOpen(false);
-    // add toast here
     console.log(event);
+    const res = await fetch("/api/auth/addEvent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(event),
+    });
+    const data = await res.json();
+    console.log(data);
+    // add toast here
   }
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
