@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
@@ -21,6 +21,7 @@ import {
   isSameDay,
 } from "date-fns";
 import HeadlessSlideOver from "./addEvent.js";
+import getEvents from "../../helpers/getEvents.js";
 
 const days = [
   { date: "2021-12-27" },
@@ -66,25 +67,13 @@ const days = [
   { date: "2022-02-05" },
   { date: "2022-02-06" },
 ];
-const meetings = [
-  {
-    id: 1,
-    name: "Leslie Alexander",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    start: "1:00 PM",
-    startDatetime: "2022-01-21T13:00",
-    end: "2:30 PM",
-    endDatetime: "2022-01-21T14:30",
-  },
-  // More meetings...
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function Monthly() {
+  const [dbEvents, setDbEvents] = useState([]);
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
@@ -94,6 +83,11 @@ export default function Monthly() {
     start: startOfWeek(firstDayCurrentMonth),
     end: endOfWeek(endOfMonth(firstDayCurrentMonth)),
   });
+  useEffect(() => {
+    getEvents().then((data) => {
+      setDbEvents([...data]);
+    });
+  }, []);
 
   function previousMonth() {
     let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
@@ -104,9 +98,8 @@ export default function Monthly() {
     let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
-
-  let selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay)
+  let selectedDayMeetings = dbEvents.filter((meeting) =>
+    isSameDay(parseISO(meeting.start.time), selectedDay)
   );
 
   return (
@@ -183,8 +176,8 @@ export default function Monthly() {
                   </time>
                 </button>
                 <div className="w-1 h-1 mx-auto mt-1">
-                  {meetings.some((meeting) =>
-                    isSameDay(parseISO(meeting.startDatetime), day)
+                  {dbEvents.some((meeting) =>
+                    isSameDay(parseISO(meeting.dateTime), day)
                   ) && <div className="w-1 h-1 rounded-full bg-sky-500"></div>}
                 </div>
               </div>
@@ -213,9 +206,9 @@ export default function Monthly() {
             />
           </div>
           <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-            {selectedDayMeetings.length > 0 ? (
-              selectedDayMeetings.map((meeting) => (
-                <Meeting meeting={meeting} key={meeting.id} />
+            {dbEvents.length > 0 ? (
+              dbEvents.map((meeting) => (
+                <Meeting meeting={meeting} key={meeting._id} />
               ))
             ) : (
               <p> No events for today.</p>
@@ -227,29 +220,15 @@ export default function Monthly() {
   );
 }
 function Meeting({ meeting }) {
-  let startDateTime = parseISO(meeting.startDatetime);
-  let endDateTime = parseISO(meeting.endDatetime);
   return (
     <li
-      key={meeting.id}
+      key={meeting._id}
       className="group flex items-center space-x-4 rounded-xl py-2 px-4 focus-within:bg-gray-100 hover:bg-gray-100"
     >
-      <img
-        src={meeting.imageUrl}
-        alt=""
-        className="h-10 w-10 flex-none rounded-full"
-      />
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting.name}</p>
-        <p className="mt-0.5">
-          <time dateTime={meeting.startDatetime}>
-            {format(startDateTime, "h:mm a")}
-          </time>{" "}
-          -{" "}
-          <time dateTime={meeting.endDateTime}>
-            {format(endDateTime, "h:mm a")}
-          </time>
-        </p>
+        <p className="text-gray-900">Starts: {meeting.start.time}</p>
+        <p className="mt-0.5">Ends: {meeting.end.time}</p>
+        <p className="mt-0.5">Event Details: {meeting.details}</p>
       </div>
       <Menu
         as="div"

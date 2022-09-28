@@ -1,6 +1,8 @@
 import { useRef } from "react";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useAtom, atom } from "jotai";
+
 export default function Login() {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -23,8 +25,7 @@ export default function Login() {
     if (!result.error) {
       router.replace("/components/monthly");
     }
-    const session = await getSession();
-    console.log(session, "session");
+
     // const res = await fetch("/api/auth/signin", {
     //   method: "POST",
     //   headers: {
