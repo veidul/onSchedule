@@ -1,4 +1,5 @@
 import React from "react";
+import LoginLogoutBtn from "./loginLogoutbtn";
 
 export default function Navbar() {
   return (
@@ -57,14 +58,7 @@ export default function Navbar() {
               About
             </a>
           </div>
-          <div>
-            <a
-              href="/components/login"
-              className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-            >
-              Login
-            </a>
-          </div>
+          <LoginLogoutBtn />
         </div>
       </nav>
     </>

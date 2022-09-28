@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useRef } from "react";
+import { getSession } from "next-auth/react";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -683,4 +684,20 @@ export default function Daily() {
       </div>
     </div>
   );
+}
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
 }

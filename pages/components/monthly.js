@@ -2,6 +2,8 @@ import { Fragment, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
+import { getSession } from "next-auth/react";
+
 import {
   format,
   startOfToday,
@@ -313,3 +315,19 @@ let colStartClasses = [
   "col-start-6",
   "col-start-7",
 ];
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
