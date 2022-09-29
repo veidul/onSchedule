@@ -19,6 +19,7 @@ import {
   parse,
   add,
   isSameDay,
+  isMatch,
 } from "date-fns";
 import HeadlessSlideOver from "./addEvent.js";
 import getEvents from "../../helpers/getEvents.js";
@@ -67,7 +68,9 @@ const days = [
   { date: "2022-02-05" },
   { date: "2022-02-06" },
 ];
-
+function filterDays(a, b) {
+  return a === b;
+}
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -99,7 +102,7 @@ export default function Monthly() {
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
   let selectedDayMeetings = dbEvents.filter((meeting) =>
-    isSameDay(parseISO(meeting.start.time), selectedDay)
+    filterDays(meeting.dateTime, format(selectedDay, "MMM dd, yyy"))
   );
 
   return (
@@ -207,7 +210,7 @@ export default function Monthly() {
           </div>
           <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
             {dbEvents.length > 0 ? (
-              dbEvents.map((meeting) => (
+              selectedDayMeetings.map((meeting) => (
                 <Meeting meeting={meeting} key={meeting._id} />
               ))
             ) : (
