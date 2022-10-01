@@ -30,7 +30,12 @@ function TextBox({ setEventDetails }) {
   );
 }
 
-export default function HeadlessSlideOver({ open, setOpen, dateTime }) {
+export default function HeadlessSlideOver({
+  open,
+  setOpen,
+  dateTime,
+  setAddEventState,
+}) {
   //plan is to get all this data then send to backend to be stored in db
   //we will also need the user id to add to the object to save in db
   const [startTime, setStartTime] = useState("");
@@ -55,7 +60,8 @@ export default function HeadlessSlideOver({ open, setOpen, dateTime }) {
     });
     const data = await res.json();
     console.log(data);
-    // add toast here
+    setAddEventState(data);
+    setOpen(false);
   }
 
   return (

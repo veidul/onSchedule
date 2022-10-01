@@ -77,6 +77,7 @@ function classNames(...classes) {
 
 export default function Monthly() {
   const [dbEvents, setDbEvents] = useState([]);
+  const [addEventState, setAddEventState] = useState({});
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
@@ -91,6 +92,11 @@ export default function Monthly() {
       setDbEvents([...data]);
     });
   }, []);
+  useEffect(() => {
+    getEvents().then((data) => {
+      setDbEvents([...data]);
+    });
+  }, [addEventState]);
 
   function previousMonth() {
     let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
@@ -203,6 +209,7 @@ export default function Monthly() {
               Add event
             </button>
             <HeadlessSlideOver
+              setAddEventState={setAddEventState}
               open={open}
               setOpen={setOpen}
               dateTime={format(selectedDay, "MMM dd, yyy")}
