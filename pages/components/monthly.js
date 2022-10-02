@@ -3,7 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
 import { getSession } from "next-auth/react";
-
+import filterDays from "../../helpers/filterDays.js";
 import {
   format,
   startOfToday,
@@ -19,7 +19,6 @@ import {
   parse,
   add,
   isSameDay,
-  isMatch,
 } from "date-fns";
 import HeadlessSlideOver from "./addEvent.js";
 import getEvents from "../../helpers/getEvents.js";
@@ -68,9 +67,6 @@ const days = [
   { date: "2022-02-05" },
   { date: "2022-02-06" },
 ];
-function filterDays(a, b) {
-  return a === b;
-}
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
