@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
 import {
@@ -13,61 +13,11 @@ import {
   endOfMonth,
   isSameMonth,
 } from "date-fns";
+import { times } from "../../helpers/times.js";
 import filterDays from "../../helpers/filterDays.js";
 import HeadlessSlideOver from "./addEvent.js";
 import getEvents from "../../helpers/getEvents.js";
-import {
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  DotsHorizontalIcon,
-} from "@heroicons/react/solid";
-import { Menu, Transition } from "@headlessui/react";
-
-const days = [
-  { date: "2021-12-27" },
-  { date: "2021-12-28" },
-  { date: "2021-12-29" },
-  { date: "2021-12-30" },
-  { date: "2021-12-31" },
-  { date: "2022-01-01", isCurrentMonth: true },
-  { date: "2022-01-02", isCurrentMonth: true },
-  { date: "2022-01-03", isCurrentMonth: true },
-  { date: "2022-01-04", isCurrentMonth: true },
-  { date: "2022-01-05", isCurrentMonth: true },
-  { date: "2022-01-06", isCurrentMonth: true },
-  { date: "2022-01-07", isCurrentMonth: true },
-  { date: "2022-01-08", isCurrentMonth: true },
-  { date: "2022-01-09", isCurrentMonth: true },
-  { date: "2022-01-10", isCurrentMonth: true },
-  { date: "2022-01-11", isCurrentMonth: true },
-  { date: "2022-01-12", isCurrentMonth: true, isToday: true },
-  { date: "2022-01-13", isCurrentMonth: true },
-  { date: "2022-01-14", isCurrentMonth: true },
-  { date: "2022-01-15", isCurrentMonth: true },
-  { date: "2022-01-16", isCurrentMonth: true },
-  { date: "2022-01-17", isCurrentMonth: true },
-  { date: "2022-01-18", isCurrentMonth: true },
-  { date: "2022-01-19", isCurrentMonth: true },
-  { date: "2022-01-20", isCurrentMonth: true },
-  { date: "2022-01-21", isCurrentMonth: true },
-  { date: "2022-01-22", isCurrentMonth: true, isSelected: true },
-  { date: "2022-01-23", isCurrentMonth: true },
-  { date: "2022-01-24", isCurrentMonth: true },
-  { date: "2022-01-25", isCurrentMonth: true },
-  { date: "2022-01-26", isCurrentMonth: true },
-  { date: "2022-01-27", isCurrentMonth: true },
-  { date: "2022-01-28", isCurrentMonth: true },
-  { date: "2022-01-29", isCurrentMonth: true },
-  { date: "2022-01-30", isCurrentMonth: true },
-  { date: "2022-01-31", isCurrentMonth: true },
-  { date: "2022-02-01" },
-  { date: "2022-02-02" },
-  { date: "2022-02-03" },
-  { date: "2022-02-04" },
-  { date: "2022-02-05" },
-  { date: "2022-02-06" },
-];
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -175,150 +125,16 @@ export default function Daily() {
                 style={{ gridTemplateRows: "repeat(48, minmax(3.5rem, 1fr))" }}
               >
                 {/* <div ref={containerOffset} className="row-end-1 h-7"></div> */}
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    12AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    1AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    2AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    3AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    4AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    5AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    6AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    7AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    8AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    9AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    10AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    11AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    12PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    1PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    2PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    3PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    4PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    5PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    6PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    7PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    8PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    9PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    10PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    11PM
-                  </div>
-                </div>
-                <div />
+                {times.map((time) => (
+                  <>
+                    <div>
+                      <div className="sticky left-0 -mt-1.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
+                        {time}
+                      </div>
+                    </div>
+                    <div />
+                  </>
+                ))}
               </div>
 
               {/* Events */}
@@ -399,11 +215,7 @@ export default function Daily() {
                     "text-gray-400",
                   isToday(day) &&
                     !isEqual(day, selectedDay) &&
-                    "text-indigo-600",
-                  dayIdx === 0 && "rounded-tl-lg",
-                  dayIdx === 6 && "rounded-tr-lg",
-                  dayIdx === days.length - 7 && "rounded-bl-lg",
-                  dayIdx === days.length - 1 && "rounded-br-lg"
+                    "text-indigo-600"
                 )}
               >
                 <time

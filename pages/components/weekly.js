@@ -1,6 +1,26 @@
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
+import getEvents from "../../helpers/getEvents";
+import filterDays from "../../helpers/filterDays";
+import HeadlessSlideOver from "./addEvent.js";
+import { times } from "../../helpers/times.js";
 
+import {
+  format,
+  startOfToday,
+  eachDayOfInterval,
+  startOfWeek,
+  endOfMonth,
+  endOfWeek,
+  isToday,
+  isSameMonth,
+  parseISO,
+  isEqual,
+  getDay,
+  parse,
+  add,
+  isSameDay,
+} from "date-fns";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -14,6 +34,39 @@ function classNames(...classes) {
 }
 
 export default function Weekly() {
+  const [dbEvents, setDbEvents] = useState([]);
+  const [addEventState, setAddEventState] = useState({});
+  let today = startOfToday();
+  let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
+  let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
+  let newDays = eachDayOfInterval({
+    start: startOfWeek(firstDayCurrentMonth),
+    end: endOfWeek(endOfMonth(firstDayCurrentMonth)),
+  });
+  function previousMonth() {
+    let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
+    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
+  }
+  function nextMonth() {
+    let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
+    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
+  }
+  // gonna have to fix this logic to get all the events for the week
+  // let selectedDayMeetings = dbEvents.filter((meeting) =>
+  //   filterDays(meeting.dateTime, format(selectedDay, "MMM dd, yyy"))
+  // );
+  let [open, setOpen] = useState(false);
+  useEffect(() => {
+    getEvents().then((data) => {
+      setDbEvents([...data]);
+    });
+  }, []);
+  useEffect(() => {
+    getEvents().then((data) => {
+      setDbEvents([...data]);
+    });
+  }, [addEventState]);
+
   const container = useRef(null);
   const containerNav = useRef(null);
   const containerOffset = useRef(null);
@@ -33,7 +86,7 @@ export default function Weekly() {
     <div className="flex h-full flex-col">
       <header className="relative z-40 flex flex-none items-center justify-between border-b border-gray-200 py-4 px-6">
         <h1 className="text-lg font-semibold text-gray-900">
-          <time dateTime="2022-01">January 2022</time>
+          <time dateTime="2022-01">{format(today, "MMMM yyy")}</time>
         </h1>
         <div className="flex items-center">
           <div className="flex items-center rounded-md shadow-sm md:items-stretch">
@@ -48,7 +101,9 @@ export default function Weekly() {
               type="button"
               className="hidden border-t border-b border-gray-300 bg-white px-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:relative md:block"
             >
-              Today
+              {format(newDays[0], "MMM d") +
+                " - " +
+                format(newDays[6], "MMM d")}
             </button>
             <span className="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
             <button
@@ -60,216 +115,21 @@ export default function Weekly() {
             </button>
           </div>
           <div className="hidden md:ml-4 md:flex md:items-center">
-            <Menu as="div" className="relative">
-              <Menu.Button
-                type="button"
-                className="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-              >
-                Week view
-                <ChevronDownIcon
-                  className="ml-2 h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </Menu.Button>
-
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-              >
-                <Menu.Items className="absolute right-0 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <div className="py-1">
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block px-4 py-2 text-sm"
-                          )}
-                        >
-                          Day view
-                        </a>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block px-4 py-2 text-sm"
-                          )}
-                        >
-                          Week view
-                        </a>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block px-4 py-2 text-sm"
-                          )}
-                        >
-                          Month view
-                        </a>
-                      )}
-                    </Menu.Item>
-                    <Menu.Item>
-                      {({ active }) => (
-                        <a
-                          href="#"
-                          className={classNames(
-                            active
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-700",
-                            "block px-4 py-2 text-sm"
-                          )}
-                        >
-                          Year view
-                        </a>
-                      )}
-                    </Menu.Item>
-                  </div>
-                </Menu.Items>
-              </Transition>
-            </Menu>
             <div className="ml-6 h-6 w-px bg-gray-300" />
             <button
               type="button"
+              onClick={() => setOpen(true)}
               className="ml-6 rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Add event
             </button>
+            <HeadlessSlideOver
+              setAddEventState={setAddEventState}
+              open={open}
+              setOpen={setOpen}
+              dateTime={format(today, "MMM dd, yyy")}
+            />
           </div>
-          <Menu as="div" className="relative ml-6 md:hidden">
-            <Menu.Button className="-mx-2 flex items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-5 w-5" aria-hidden="true" />
-            </Menu.Button>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items className="absolute right-0 mt-3 w-36 origin-top-right divide-y divide-gray-100 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
-                        )}
-                      >
-                        Create event
-                      </a>
-                    )}
-                  </Menu.Item>
-                </div>
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
-                        )}
-                      >
-                        Go to today
-                      </a>
-                    )}
-                  </Menu.Item>
-                </div>
-                <div className="py-1">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
-                        )}
-                      >
-                        Day view
-                      </a>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
-                        )}
-                      >
-                        Week view
-                      </a>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
-                        )}
-                      >
-                        Month view
-                      </a>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <a
-                        href="#"
-                        className={classNames(
-                          active
-                            ? "bg-gray-100 text-gray-900"
-                            : "text-gray-700",
-                          "block px-4 py-2 text-sm"
-                        )}
-                      >
-                        Year view
-                      </a>
-                    )}
-                  </Menu.Item>
-                </div>
-              </Menu.Items>
-            </Transition>
-          </Menu>
         </div>
       </header>
       <div
@@ -285,129 +145,42 @@ export default function Weekly() {
             className="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
           >
             <div className="grid grid-cols-7 text-sm leading-6 text-gray-500 sm:hidden">
-              <button
-                type="button"
-                className="flex flex-col items-center pt-2 pb-3"
-              >
-                M{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  10
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pt-2 pb-3"
-              >
-                T{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  11
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pt-2 pb-3"
-              >
-                W{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                  12
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pt-2 pb-3"
-              >
-                T{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  13
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pt-2 pb-3"
-              >
-                F{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  14
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pt-2 pb-3"
-              >
-                S{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  15
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pt-2 pb-3"
-              >
-                S{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  16
-                </span>
-              </button>
+              {newDays.slice(0, 7).map((day) => (
+                <>
+                  <button
+                    type="button"
+                    className="flex flex-col items-center pt-2 pb-3"
+                  >
+                    {format(new Date(day), "e")}{" "}
+                    <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
+                      {format(day, "d")}
+                    </span>
+                  </button>
+                </>
+              ))}
             </div>
 
             <div className="-mr-px hidden grid-cols-7 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
               <div className="col-end-1 w-14" />
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Mon{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    10
+              {newDays.slice(0, 7).map((day) => (
+                <div
+                  key={day.toString()}
+                  className="flex items-center justify-center py-3"
+                >
+                  <span>
+                    {format(new Date(day), "eee")}{" "}
+                    <span
+                      className={
+                        isEqual(day, today)
+                          ? "items-center justify-center font-semibold text-white rounded-full bg-indigo-600"
+                          : "items-center justify-center font-semibold text-gray-900"
+                      }
+                    >
+                      {format(day, "d")}
+                    </span>
                   </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Tue{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    11
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span className="flex items-baseline">
-                  Wed{" "}
-                  <span className="ml-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                    12
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Thu{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    13
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Fri{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    14
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Sat{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    15
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Sun{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    16
-                  </span>
-                </span>
-              </div>
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex flex-auto">
@@ -419,150 +192,16 @@ export default function Weekly() {
                 style={{ gridTemplateRows: "repeat(48, minmax(3.5rem, 1fr))" }}
               >
                 <div ref={containerOffset} className="row-end-1 h-7"></div>
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    12AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    1AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    2AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    3AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    4AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    5AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    6AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    7AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    8AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    9AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    10AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    11AM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    12PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    1PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    2PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    3PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    4PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    5PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    6PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    7PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    8PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    9PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    10PM
-                  </div>
-                </div>
-                <div />
-                <div>
-                  <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
-                    11PM
-                  </div>
-                </div>
-                <div />
+                {times.map((time) => (
+                  <>
+                    <div>
+                      <div className="sticky left-0 z-20 -mt-2.5 -ml-14 w-14 pr-2 text-right text-xs leading-5 text-gray-400">
+                        {time}
+                      </div>
+                    </div>
+                    <div />
+                  </>
+                ))}
               </div>
 
               {/* Vertical lines */}
@@ -586,7 +225,7 @@ export default function Weekly() {
               >
                 <li
                   className="relative mt-px flex sm:col-start-3"
-                  style={{ gridRow: "74 / span 12" }}
+                  style={{ gridRow: "74 / span 74" }}
                 >
                   <a
                     href="#"
