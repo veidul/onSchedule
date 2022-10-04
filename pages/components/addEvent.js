@@ -50,7 +50,6 @@ export default function HeadlessSlideOver({
       end: endTime,
       details: eventDetails,
     };
-    console.log(event);
     const res = await fetch("/api/auth/addEvent", {
       method: "POST",
       headers: {
@@ -59,7 +58,6 @@ export default function HeadlessSlideOver({
       body: JSON.stringify(event),
     });
     const data = await res.json();
-    console.log(data);
     setAddEventState(data);
     setOpen(false);
   }

@@ -8,7 +8,6 @@ async function addEventDB(req, res) {
     const start = req.body.start;
     const end = req.body.end;
     const details = req.body.details;
-    console.log(email, dateTime, start, end, details);
     //Connect with database
     const client = await MongoClient.connect(`${process.env.MONGODB_URI}`, {
       useNewUrlParser: true,

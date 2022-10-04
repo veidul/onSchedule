@@ -37,7 +37,6 @@ export default function Register() {
     });
     //Await for data for any desirable next steps
     const data = await res.json();
-    console.log(data);
   }
   return (
     <>

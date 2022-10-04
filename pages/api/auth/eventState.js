@@ -13,7 +13,6 @@ async function eventState(req, res) {
     const db = client.db();
     const cursor = await db.collection("events").find({ email: email });
     await cursor.forEach((doc) => data.push(doc));
-    // console.log({ ...status }, "status");
     //Send success response
     res.status(201).json(data);
     //Close DB connection

@@ -12,6 +12,7 @@ import {
   endOfWeek,
   endOfMonth,
   isSameMonth,
+  add,
 } from "date-fns";
 import { times } from "../../helpers/times.js";
 import filterDays from "../../helpers/filterDays.js";
@@ -22,7 +23,6 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-
 export default function Daily() {
   let today = startOfToday();
   let [selectedDay, setSelectedDay] = useState(today);
@@ -54,8 +54,6 @@ export default function Daily() {
       setDbEvents([...data]);
     });
   }, []);
-  console.log(dbEvents);
-  console.log(selectedDay);
   let selectedDayMeetings = dbEvents.filter((meeting) =>
     filterDays(meeting.dateTime, format(selectedDay, "MMM dd, yyy"))
   );
@@ -78,7 +76,7 @@ export default function Daily() {
 
   return (
     <div className="flex h-full flex-col">
-      <header className="relative z-20 flex flex-none items-center justify-between border-b border-gray-200 py-4 px-6">
+      <header className="relative flex flex-none items-center justify-between border-b border-gray-200 py-4 px-6">
         <div>
           <h1 className="text-lg font-semibold leading-6 text-gray-900">
             <time dateTime="2022-01-22" className="sm:hidden">
@@ -92,6 +90,12 @@ export default function Daily() {
             {format(selectedDay, "iiii")}
           </p>
         </div>
+        <HeadlessSlideOver
+          setAddEventState={setAddEventState}
+          open={open}
+          setOpen={setOpen}
+          dateTime={format(selectedDay, "MMM dd, yyy")}
+        />
         <div className="flex items-center">
           <div className="hidden md:ml-4 md:flex md:items-center">
             <div className="ml-6 h-6 w-px bg-gray-300" />
@@ -102,12 +106,6 @@ export default function Daily() {
             >
               Add event
             </button>
-            <HeadlessSlideOver
-              setAddEventState={setAddEventState}
-              open={open}
-              setOpen={setOpen}
-              dateTime={format(selectedDay, "MMM dd, yyy")}
-            />
           </div>
         </div>
       </header>
@@ -149,13 +147,21 @@ export default function Daily() {
                     className="relative mt-px flex"
                     key={meeting.id}
                     style={{
-                      gridRow: `${(meeting.start.id - 0.5) * 4}`,
+                      gridRowStart: `${(meeting.start.id - 0.5) * 4}`,
+                      gridRowEnd: `${(meeting.end.id - 0.5) * 4}`,
                     }}
                   >
-                    <p className="text-blue-500 group-hover:text-blue-700">
-                      {meeting.start.time} - {meeting.end.time} Details:{" "}
-                      {meeting.details}
-                    </p>
+                    <a
+                      href="#"
+                      className={`group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-teal-50 p-2 text-xs leading-5 hover:bg-teal-100`}
+                    >
+                      <p className={`order-1 font-semibold text-teal-700`}>
+                        {meeting.details}
+                      </p>
+                      <p className={`text-teal-500 group-hover:text-teal-700`}>
+                        {meeting.start.time} - {meeting.end.time}
+                      </p>
+                    </a>
                   </li>
                 ))}
               </ol>

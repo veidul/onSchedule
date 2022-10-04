@@ -4,6 +4,7 @@ import getEvents from "../../helpers/getEvents";
 import filterDays from "../../helpers/filterDays";
 import HeadlessSlideOver from "./addEvent.js";
 import { times } from "../../helpers/times.js";
+import WeekLogic from "./weekLogic";
 
 import {
   format,
@@ -38,11 +39,13 @@ export default function Weekly() {
   const [addEventState, setAddEventState] = useState({});
   let today = startOfToday();
   let [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
+
   let firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
   let newDays = eachDayOfInterval({
-    start: startOfWeek(firstDayCurrentMonth),
-    end: endOfWeek(endOfMonth(firstDayCurrentMonth)),
+    start: startOfWeek(today),
+    end: endOfWeek(today),
   });
+  console.log(newDays, "newDays");
   function previousMonth() {
     let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
@@ -51,6 +54,21 @@ export default function Weekly() {
     let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
+
+  function getWeekEvents() {
+    let weekEvents = [];
+    for (let i = 0; i < newDays.length; i++) {
+      let day = newDays[i];
+      weekEvents.push(
+        dbEvents.filter((meeting) =>
+          filterDays(meeting.dateTime, format(day, "MMM dd, yyy"))
+        )
+      );
+    }
+    return weekEvents;
+  }
+  const weekArr = getWeekEvents();
+
   // gonna have to fix this logic to get all the events for the week
   // let selectedDayMeetings = dbEvents.filter((meeting) =>
   //   filterDays(meeting.dateTime, format(selectedDay, "MMM dd, yyy"))
@@ -71,20 +89,20 @@ export default function Weekly() {
   const containerNav = useRef(null);
   const containerOffset = useRef(null);
 
-  useEffect(() => {
-    // Set the container scroll position based on the current time.
-    const currentMinute = new Date().getHours() * 60;
-    container.current.scrollTop =
-      ((container.current.scrollHeight -
-        containerNav.current.offsetHeight -
-        containerOffset.current.offsetHeight) *
-        currentMinute) /
-      1440;
-  }, []);
+  // useEffect(() => {
+  //   // Set the container scroll position based on the current time.
+  //   const currentMinute = new Date().getHours() * 60;
+  //   container.current.scrollTop =
+  //     ((container.current.scrollHeight -
+  //       containerNav.current.offsetHeight -
+  //       containerOffset.current.offsetHeight) *
+  //       currentMinute) /
+  //     1440;
+  // }, []);
 
   return (
     <div className="flex h-full flex-col">
-      <header className="relative z-40 flex flex-none items-center justify-between border-b border-gray-200 py-4 px-6">
+      <header className="relative flex flex-none items-center justify-between border-b border-gray-200 py-4 px-6">
         <h1 className="text-lg font-semibold text-gray-900">
           <time dateTime="2022-01">{format(today, "MMMM yyy")}</time>
         </h1>
@@ -94,7 +112,7 @@ export default function Weekly() {
               type="button"
               className="flex items-center justify-center rounded-l-md border border-r-0 border-gray-300 bg-white py-2 pl-3 pr-4 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
             >
-              <span className="sr-only">Previous month</span>
+              <span className="sr-only">Previous week</span>
               <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
             </button>
             <button
@@ -108,9 +126,18 @@ export default function Weekly() {
             <span className="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
             <button
               type="button"
+              className="md:hidden border-t border-b border-gray-300 bg-white py-2 px-5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:relative md:block"
+            >
+              {format(newDays[0], "MMM d") +
+                " - " +
+                format(newDays[6], "MMM d")}
+            </button>
+            <span className="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
+            <button
+              type="button"
               className="flex items-center justify-center rounded-r-md border border-l-0 border-gray-300 bg-white py-2 pl-4 pr-3 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
             >
-              <span className="sr-only">Next month</span>
+              <span className="sr-only">Next week</span>
               <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
@@ -142,16 +169,16 @@ export default function Weekly() {
         >
           <div
             ref={containerNav}
-            className="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
+            className="sticky top-0 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
           >
             <div className="grid grid-cols-7 text-sm leading-6 text-gray-500 sm:hidden">
-              {newDays.slice(0, 7).map((day) => (
+              {newDays.map((day) => (
                 <>
                   <button
                     type="button"
                     className="flex flex-col items-center pt-2 pb-3"
                   >
-                    {format(new Date(day), "e")}{" "}
+                    {format(new Date(day), "eee")}{" "}
                     <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
                       {format(day, "d")}
                     </span>
@@ -162,17 +189,23 @@ export default function Weekly() {
 
             <div className="-mr-px hidden grid-cols-7 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
               <div className="col-end-1 w-14" />
-              {newDays.slice(0, 7).map((day) => (
+              {newDays.map((day) => (
                 <div
                   key={day.toString()}
                   className="flex items-center justify-center py-3"
                 >
-                  <span>
+                  <span
+                    className={
+                      isEqual(day, today)
+                        ? "items-center justify-center font-semibold text-white bg-indigo-600"
+                        : "items-center justify-center font-semibold text-gray-900"
+                    }
+                  >
                     {format(new Date(day), "eee")}{" "}
                     <span
                       className={
                         isEqual(day, today)
-                          ? "items-center justify-center font-semibold text-white rounded-full bg-indigo-600"
+                          ? "items-center justify-center font-semibold text-white bg-indigo-600"
                           : "items-center justify-center font-semibold text-gray-900"
                       }
                     >
@@ -191,7 +224,7 @@ export default function Weekly() {
                 className="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100"
                 style={{ gridTemplateRows: "repeat(48, minmax(3.5rem, 1fr))" }}
               >
-                <div ref={containerOffset} className="row-end-1 h-7"></div>
+                {/* <div ref={containerOffset} className="row-end-1 h-7"></div> */}
                 {times.map((time) => (
                   <>
                     <div>
@@ -220,57 +253,10 @@ export default function Weekly() {
               <ol
                 className="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"
                 style={{
-                  gridTemplateRows: "1.75rem repeat(288, minmax(0, 1fr)) auto",
+                  gridTemplateRows: "7rem repeat(92, minmax(0, 1fr)) auto",
                 }}
               >
-                <li
-                  className="relative mt-px flex sm:col-start-3"
-                  style={{ gridRow: "74 / span 74" }}
-                >
-                  <a
-                    href="#"
-                    className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100"
-                  >
-                    <p className="order-1 font-semibold text-blue-700">
-                      Breakfast
-                    </p>
-                    <p className="text-blue-500 group-hover:text-blue-700">
-                      <time dateTime="2022-01-12T06:00">6:00 AM</time>
-                    </p>
-                  </a>
-                </li>
-                <li
-                  className="relative mt-px flex sm:col-start-3"
-                  style={{ gridRow: "92 / span 30" }}
-                >
-                  <a
-                    href="#"
-                    className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-pink-50 p-2 text-xs leading-5 hover:bg-pink-100"
-                  >
-                    <p className="order-1 font-semibold text-pink-700">
-                      Flight to Paris
-                    </p>
-                    <p className="text-pink-500 group-hover:text-pink-700">
-                      <time dateTime="2022-01-12T07:30">7:30 AM</time>
-                    </p>
-                  </a>
-                </li>
-                <li
-                  className="relative mt-px hidden sm:col-start-6 sm:flex"
-                  style={{ gridRow: "122 / span 24" }}
-                >
-                  <a
-                    href="#"
-                    className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-gray-100 p-2 text-xs leading-5 hover:bg-gray-200"
-                  >
-                    <p className="order-1 font-semibold text-gray-700">
-                      Meeting with design team at Disney
-                    </p>
-                    <p className="text-gray-500 group-hover:text-gray-700">
-                      <time dateTime="2022-01-15T10:00">10:00 AM</time>
-                    </p>
-                  </a>
-                </li>
+                <WeekLogic dbEvents={dbEvents} newDays={newDays} />
               </ol>
             </div>
           </div>
