@@ -24,7 +24,7 @@ export default function Login() {
       alert("Login Successful");
     }
     if (!result.error) {
-      router.replace("/components/monthly");
+      router.replace("/monthly");
     }
 
     // const res = await fetch("/api/auth/signin", {

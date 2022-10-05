@@ -14,10 +14,10 @@ import {
   isSameMonth,
   add,
 } from "date-fns";
-import { times } from "../../helpers/times.js";
-import filterDays from "../../helpers/filterDays.js";
-import HeadlessSlideOver from "./addEvent.js";
-import getEvents from "../../helpers/getEvents.js";
+import { times } from "../helpers/times.js";
+import filterDays from "../helpers/filterDays.js";
+import HeadlessSlideOver from "./components/addEvent.js";
+import getEvents from "../helpers/getEvents.js";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 

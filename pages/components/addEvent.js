@@ -63,7 +63,7 @@ export default function HeadlessSlideOver({
   }
 
   return (
-    <Transition.Root show={open} as={Fragment}>
+    <Transition.Root show={open ? open : false} as={Fragment}>
       <Dialog
         as="div"
         className="relative z-10"
@@ -77,7 +77,7 @@ export default function HeadlessSlideOver({
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
               <Transition.Child
-                show={open}
+                show={open ? open : false}
                 as={Fragment}
                 enter="transform transition ease-in-out duration-500 sm:duration-700"
                 enterFrom="translate-x-full"

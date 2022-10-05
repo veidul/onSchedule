@@ -1,10 +1,10 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
-import getEvents from "../../helpers/getEvents";
-import filterDays from "../../helpers/filterDays";
-import HeadlessSlideOver from "./addEvent.js";
-import { times } from "../../helpers/times.js";
-import WeekLogic from "./weekLogic";
+import getEvents from "../helpers/getEvents";
+import filterDays from "../helpers/filterDays";
+import HeadlessSlideOver from "./components/addEvent.js";
+import { times } from "../helpers/times.js";
+import WeekLogic from "./components/weekLogic";
 
 import {
   format,
@@ -45,7 +45,6 @@ export default function Weekly() {
     start: startOfWeek(today),
     end: endOfWeek(today),
   });
-  console.log(newDays, "newDays");
   function previousMonth() {
     let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));

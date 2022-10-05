@@ -3,7 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
 import { Menu, Transition } from "@headlessui/react";
 import { DotsVerticalIcon } from "@heroicons/react/outline";
 import { getSession } from "next-auth/react";
-import filterDays from "../../helpers/filterDays.js";
+import filterDays from "../helpers/filterDays.js";
 import {
   format,
   startOfToday,
@@ -20,8 +20,8 @@ import {
   add,
   isSameDay,
 } from "date-fns";
-import HeadlessSlideOver from "./addEvent.js";
-import getEvents from "../../helpers/getEvents.js";
+import HeadlessSlideOver from "./components/addEvent.js";
+import getEvents from "../helpers/getEvents.js";
 import { Link } from "react-router-dom";
 
 function classNames(...classes) {

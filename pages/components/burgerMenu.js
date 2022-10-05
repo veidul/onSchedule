@@ -8,22 +8,22 @@ const solutions = [
   {
     name: "Daily",
     description: "Day view of events",
-    href: "/components/daily",
+    href: "/daily",
   },
   {
     name: "Weekly",
     description: "Week view of events",
-    href: "/components/weekly",
+    href: "/weekly",
   },
   {
     name: "Monthly",
     description: "Month view of events",
-    href: "/components/monthly",
+    href: "/monthly",
   },
   {
     name: "About",
     description: "Learn more about OnSchedule",
-    href: "/components/about",
+    href: "/",
   },
 ];
 
