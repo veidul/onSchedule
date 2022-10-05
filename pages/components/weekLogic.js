@@ -2,8 +2,6 @@ import filterDays from "../../helpers/filterDays";
 import { format } from "date-fns";
 import Link from "next/link";
 export default function WeekLogic({ dbEvents, newDays }) {
-  console.log(dbEvents, "dbEvents");
-  console.log(newDays, "newDays");
   function getWeekEvents() {
     const weekEvents = [];
     for (let i = 0; i < newDays.length; i++) {
@@ -17,7 +15,6 @@ export default function WeekLogic({ dbEvents, newDays }) {
     return weekEvents;
   }
   const weekArr = getWeekEvents();
-  console.log(weekArr, "weekArr");
   return (
     <>
       {weekArr[0].length > 0 ? (
