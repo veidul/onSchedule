@@ -1,4 +1,4 @@
-import filterDays from "../../helpers/filterDays";
+import filterDays from "../helpers/filterDays";
 import { format } from "date-fns";
 import Link from "next/link";
 export default function WeekLogic({ dbEvents, newDays }) {

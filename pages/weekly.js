@@ -2,9 +2,9 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { getSession } from "next-auth/react";
 import getEvents from "../helpers/getEvents";
 import filterDays from "../helpers/filterDays";
-import HeadlessSlideOver from "./components/addEvent.js";
+import HeadlessSlideOver from "../components/addEvent.js";
 import { times } from "../helpers/times.js";
-import WeekLogic from "./components/weekLogic";
+import WeekLogic from "../components/weekLogic";
 
 import {
   format,

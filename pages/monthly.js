@@ -20,7 +20,7 @@ import {
   add,
   isSameDay,
 } from "date-fns";
-import HeadlessSlideOver from "./components/addEvent.js";
+import HeadlessSlideOver from "../components/addEvent.js";
 import getEvents from "../helpers/getEvents.js";
 import { Link } from "react-router-dom";
 
