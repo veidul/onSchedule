@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useAtom, atom } from "jotai";
+import Link from "next/link";
 
 export default function Login() {
   const emailRef = useRef();
@@ -91,12 +92,11 @@ export default function Login() {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <a
-                  href="/auth/register"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Register
-                </a>
+                <Link href="/auth/register">
+                  <a className="font-medium text-indigo-600 hover:text-indigo-500">
+                    Register
+                  </a>
+                </Link>
               </div>
             </div>
 

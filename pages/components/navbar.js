@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState } from "react";
 import BurgerMenu from "./burgerMenu";
 import LoginLogoutBtn from "./loginLogoutbtn";
@@ -25,30 +26,26 @@ export default function Navbar() {
         </div>
         <div className="w-full block hidden flex-grow lg:flex lg:items-center lg:w-auto">
           <div className="text-sm lg:flex-grow">
-            <a
-              href="/components/daily"
-              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-            >
-              Daily
-            </a>
-            <a
-              href="/components/weekly"
-              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-            >
-              Weekly
-            </a>
-            <a
-              href="/components/monthly"
-              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-            >
-              Monthly
-            </a>
-            <a
-              href="/components/about"
-              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
-            >
-              About
-            </a>
+            <Link href="/components/daily">
+              <a className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                Daily
+              </a>
+            </Link>
+            <Link href="/components/weekly">
+              <a className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                Weekly
+              </a>
+            </Link>
+            <Link href="/components/monthly">
+              <a className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                Monthly
+              </a>
+            </Link>
+            <Link href="/components/about">
+              <a className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                About
+              </a>
+            </Link>
           </div>
           <LoginLogoutBtn />
         </div>

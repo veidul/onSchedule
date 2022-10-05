@@ -19,6 +19,7 @@ import filterDays from "../../helpers/filterDays.js";
 import HeadlessSlideOver from "./addEvent.js";
 import getEvents from "../../helpers/getEvents.js";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/solid";
+import Link from "next/link";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -151,17 +152,20 @@ export default function Daily() {
                       gridRowEnd: `${(meeting.end.id - 0.5) * 4}`,
                     }}
                   >
-                    <a
-                      href="#"
-                      className={`group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-teal-50 p-2 text-xs leading-5 hover:bg-teal-100`}
-                    >
-                      <p className={`order-1 font-semibold text-teal-700`}>
-                        {meeting.details}
-                      </p>
-                      <p className={`text-teal-500 group-hover:text-teal-700`}>
-                        {meeting.start.time} - {meeting.end.time}
-                      </p>
-                    </a>
+                    <Link href="#">
+                      <a
+                        className={`group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-teal-50 p-2 text-xs leading-5 hover:bg-teal-100`}
+                      >
+                        <p className={`order-1 font-semibold text-teal-700`}>
+                          {meeting.details}
+                        </p>
+                        <p
+                          className={`text-teal-500 group-hover:text-teal-700`}
+                        >
+                          {meeting.start.time} - {meeting.end.time}
+                        </p>
+                      </a>
+                    </Link>
                   </li>
                 ))}
               </ol>

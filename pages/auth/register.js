@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import Link from "next/link";
 export default function Register() {
   const nameRef = useRef();
   const emailRef = useRef();
@@ -119,12 +120,11 @@ export default function Register() {
 
             <div className="flex items-center justify-between">
               <div className="text-sm">
-                <a
-                  href="/auth/signin"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
-                >
-                  Sign in
-                </a>
+                <Link href="/auth/signin">
+                  <a className="font-medium text-indigo-600 hover:text-indigo-500">
+                    Sign in
+                  </a>
+                </Link>
               </div>
             </div>
 

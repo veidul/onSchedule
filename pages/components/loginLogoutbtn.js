@@ -1,5 +1,6 @@
 import { useSession, getSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 export default function LoginLogoutBtn() {
   const { data: session, status } = useSession();
@@ -11,12 +12,11 @@ export default function LoginLogoutBtn() {
   if (status === "unauthenticated") {
     return (
       <div>
-        <a
-          href="/auth/login"
-          className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-        >
-          Login
-        </a>
+        <Link href="/auth/login">
+          <a className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0">
+            Login
+          </a>
+        </Link>
       </div>
     );
   }

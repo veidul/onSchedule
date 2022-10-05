@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { Popover, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
 import LoginLogoutBtn from "./loginLogoutbtn";
+import Link from "next/link";
 
 const solutions = [
   {
@@ -65,18 +66,16 @@ export default function BurgerMenu() {
                 <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
                   <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
                     {solutions.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className="-m-3 block rounded-md p-3 transition duration-150 ease-in-out hover:bg-gray-50"
-                      >
-                        <p className="text-base font-medium text-gray-900">
-                          {item.name}
-                        </p>
-                        <p className="mt-1 text-sm text-gray-500">
-                          {item.description}
-                        </p>
-                      </a>
+                      <Link key={item.name} href={item.href}>
+                        <a className="-m-3 block rounded-md p-3 transition duration-150 ease-in-out hover:bg-gray-50">
+                          <p className="text-base font-medium text-gray-900">
+                            {item.name}
+                          </p>
+                          <p className="mt-1 text-sm text-gray-500">
+                            {item.description}
+                          </p>
+                        </a>
+                      </Link>
                     ))}
                   </div>
                 </div>

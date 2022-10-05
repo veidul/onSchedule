@@ -33,7 +33,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function timeDropDown({ start, setStartTime, setEndTime }) {
+export default function TimeDropDown({ start, setStartTime, setEndTime }) {
   const [selected, setSelected] = useState(times[12]);
   useEffect(() => {
     if (start) {

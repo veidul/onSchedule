@@ -22,6 +22,7 @@ import {
 } from "date-fns";
 import HeadlessSlideOver from "./addEvent.js";
 import getEvents from "../../helpers/getEvents.js";
+import { Link } from "react-router-dom";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -216,28 +217,30 @@ function Meeting({ meeting }) {
             <div className="py-1">
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="#"
-                    className={classNames(
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block px-4 py-2 text-sm"
-                    )}
-                  >
-                    Edit
-                  </a>
+                  <Link href="#">
+                    <a
+                      className={classNames(
+                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                        "block px-4 py-2 text-sm"
+                      )}
+                    >
+                      Edit
+                    </a>
+                  </Link>
                 )}
               </Menu.Item>
               <Menu.Item>
                 {({ active }) => (
-                  <a
-                    href="#"
-                    className={classNames(
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block px-4 py-2 text-sm"
-                    )}
-                  >
-                    Cancel
-                  </a>
+                  <Link href="#">
+                    <a
+                      className={classNames(
+                        active ? "bg-gray-100 text-gray-900" : "text-gray-700",
+                        "block px-4 py-2 text-sm"
+                      )}
+                    >
+                      Cancel
+                    </a>
+                  </Link>
                 )}
               </Menu.Item>
             </div>
