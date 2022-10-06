@@ -261,8 +261,10 @@ let colStartClasses = [
 ];
 export async function getServerSideProps(context) {
   const session = await getSession(context);
+  console.log(session, "session is here");
 
   if (!session) {
+    console.log("no session");
     return {
       redirect: {
         destination: "/auth/login",
